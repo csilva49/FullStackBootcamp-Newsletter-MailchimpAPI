@@ -1,0 +1,71 @@
+const express = require("express");
+const bodyParser = require("body-parser");
+const request = require("request");
+const https = require("https");
+
+//start express
+const app = express();
+
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + "/signup.html");
+});
+
+app.post("/", function (req, res) {
+  const firstName = req.body.firstNameInput;
+  const lastName = req.body.lastNameInput;
+  const email = req.body.emailInput;
+
+  const data = {
+    members: [
+      {
+        email_address: email,
+        status: "subscribed",
+        merge_fiels: {
+          FNAME: firstName,
+          LNAME: lastName,
+        },
+      },
+    ],
+  };
+
+  const jsonData = JSON.stringify(data);
+
+  const url = "https://us17.api.mailchimp.com/3.0/lists/b881319172";
+  const options = {
+    method: "POST",
+    auth: "silva:199bbabe9b8206d9a4a79dd5f2fde949-us17",
+  };
+
+  const request = https.request(url, options, function (response) {
+    response.on("data", function (data) {
+      console.log(JSON.parse(data));
+
+      if (response.statusCode == 200) {
+        res.sendFile(__dirname + "/success.html");
+      } 
+      else {
+        res.sendFile(__dirname + "/failure.html");
+      }
+    });
+  });
+
+  request.write(jsonData);
+  request.end();
+
+});
+
+app.post("/failure", function(req, res){
+  res.redirect("/");
+});
+
+//app listen
+app.listen(process.env.PORT, function () {
+  console.log("Server is running on port 3000");
+});
+
+//199bbabe9b8206d9a4a79dd5f2fde949-us17
+
+//audience id b881319172
