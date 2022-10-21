@@ -36,7 +36,7 @@ app.post("/", function (req, res) {
   const url = "https://us17.api.mailchimp.com/3.0/lists/b881319172";
   const options = {
     method: "POST",
-    auth: "silva:199bbabe9b8206d9a4a79dd5f2fde949-us17",
+    auth: "api credentials",
   };
 
   const request = https.request(url, options, function (response) {
@@ -65,7 +65,3 @@ app.post("/failure", function(req, res){
 app.listen(process.env.PORT, function () {
   console.log("Server is running on port 3000");
 });
-
-//199bbabe9b8206d9a4a79dd5f2fde949-us17
-
-//audience id b881319172
